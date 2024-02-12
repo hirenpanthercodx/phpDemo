@@ -15,132 +15,138 @@
 <?php
     require 'db.php';
 
-var_dump($_POST);
-
     $firstName = $lastName = $email = $gender = $occuption = $hobby = '';
     $firstNameErr = $lastNameErr = $emailErr = $genderErr = $occuptionErr = $hobbyErr = '';
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        echo 'dgjffggdsg';
-        if (empty($_POST(["firstName"]))) {
+
+    if (isset($_POST['insert'])) {
+        if (empty($_POST["firstName"])) {
             $firstNameErr = 'First name is empty';
         } else {
-            $firstName = empty($_POST(["firstName"]));
+            $firstName = $_POST["firstName"];
         }
     
-        if (empty($_POST(["lastName"]))) {
+        if (empty($_POST["lastName"])) {
             $lastNameErr = 'Last name is empty';
         } else {
-            $lastName = empty($_POST(["lastName"]));
+            $lastName = $_POST["lastName"];
         }
     
-        if (empty($_POST(["email"]))) {
+        if (empty($_POST["email"])) {
             $emailErr = 'email is empty';
         } else {
-            $email = empty($_POST(["email"]));
+            $email = $_POST["email"];
         }
     
-        if (empty($_POST(["gender"]))) {
-            $genderErr = 'email is empty';
+        if (empty($_POST["gender"])) {
+            $genderErr = 'gender is empty';
         } else {
-            $gender = empty($_POST(["gender"]));
+            $gender = $_POST["gender"];
         }
     
-        if (empty($_POST(["occuption"]))) {
-            $occuptionErr = 'email is empty';
+        if (empty($_POST["occuption"])) {
+            $occuptionErr = 'occuption is empty';
         } else {
-            $occuption = empty($_POST(["email"]));
+            $occuption = $_POST["occuption"];
         }
     
-        if (empty($_POST(["hobby"]))) {
-            $hobbyErr = 'email is empty';
+        if (empty($_POST["hobby"])) {
+            $hobbyErr = 'hobby is empty';
         } else {
-            $hobby = empty($_POST(["email"]));
+            $hobby =$_POST["hobby"];
         }
+        $conn = mysqli_connect($servername, $username, $password, $dbname);
+
+        // Check connection
+        $sql = "INSERT INTO employeeData (firstname, lastname, email, gender, occuption, hobby)
+        VALUES ($firstName, $lastName, $email, $gender, $occuption, $hobby)";
+        var_dump($conn, $sql);
+        
+        if (mysqli_query($conn, $sql)) {
+          echo "New record created successfully";
+        } else {
+          echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+        }
+        
+        mysqli_close($conn);
     }    
 ?>
 
     <div style="width: 60%; margin: auto;">
-        <div class="mt-3">
-            <h4>Insert Record | PHP CRUD Operations using Stored Procedure</h4>
-            <hr>
+        <div class="my-3 d-flex">
+            <button class='btn btn-outline-secondary mr-4' onClick="window.location.href='index.html'">Back</button>
+            <h4>Insert Record | PHP CRUD Operations</h4>
         </div>
-        <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+        <hr>
+        <form method="post" name="insertrecord">
             <div>
                 <div class="d-flex">
                     <div class="col-6 form-group">
                         <label for="firstName">First Name</label>
-                        <input type="text" id="firstName" name="name" class="form-control" placeholder="Enter First name" />
+                        <input type="text" id="firstName" name="firstName" class="form-control" placeholder="Enter First name" value="<?php echo $firstName;?>"/>
+                        <span class="text-danger"><?php echo $firstNameErr;?></span>
                     </div>
                     <div class="col-6 form-group">
-                        <label for="lasttName">Last Name</label>
-                        <input type="text" id="lasttName" class="form-control" name="lasttName" placeholder="Enter Last name" />
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" class="form-control" name="lastName" placeholder="Enter Last name" value="<?php echo $lastName;?>"/>
+                        <span class="text-danger"><?php echo $lastNameErr;?></span>
                     </div>
                 </div>
                 <div  class="d-flex">
                     <div class="col-6 form-group">
                         <label for="lasttName">Email</label>
-                        <input type="email" id="email" class="form-control" name="email" placeholder="Enter Email" />
+                        <input type="text" id="email" class="form-control" name="email" placeholder="Enter Email" value="<?php echo $email;?>"/>
+                        <span class="text-danger"><?php echo $emailErr;?></span>
                     </div>
                     <div class="col-6 form-group">
                         <label for="lasttName">Gender</label>
                         <div class="d-flex">
                             <div class="mr-3 form-check">
-                                <input type="radio" id="male" class="form-check-input" name="gender" value="male" />
+                                <input type="radio" id="male" class="form-check-input" name="gender" value="male" <?php if (isset($gender) && $gender=="male") echo "checked";?>/>
                                 <label class="form-check-label" for="male">Male</label>
                             </div>
                             <div class="form-check">
-                                <input type="radio" id="female" class="form-check-input" name="gender" value="female" />
+                                <input type="radio" id="female" class="form-check-input" name="gender" value="female" <?php if (isset($gender) && $gender=="female") echo "checked";?>/>
                                 <label class="form-check-label" for="female">Female</label>
                             </div>
                         </div>
+                        <span class="text-danger"><?php echo $genderErr;?></span>
                     </div>
                 </div>
                 <div class="d-flex">
                     <div class="col-6 form-group">
                         <label for="occuption">Occuption</label>
-                        <select class="custom-select" id="occuption" name="occuption">
-                            <option value="1">Job</option>
-                            <option value="2">Business</option>
-                            <option value="3">Other</option>
+                        <select class="custom-select" id="occuption" name="occuption" value="<?php echo $occuption;?>">
+                            <option value="">Select</option>
+                            <option value="job">Job</option>
+                            <option value="business">Business</option>
+                            <option value="other">Other</option>
                         </select>
+                        <span class="text-danger"><?php echo $occuptionErr;?></span>
                     </div>
                     <div class="col-6 form-group">
                         <label for="occuption">Hobby</label>
                         <div class="d-flex">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="reading" name="hobby" id="hobby">
+                                <input class="form-check-input" type="checkbox" value="reading" name="hobby" id="hobby" <?php if (isset($hobby) && $hobby=="reading") echo "checked";?>>
                                 <label class="form-check-label" for="reading">Reading</label>
                             </div>
                             <div class="form-check mx-3">
-                                <input class="form-check-input" type="checkbox" value="music" name="hobby" id="hobby">
+                                <input class="form-check-input" type="checkbox" value="music" name="hobby" id="hobby" <?php if (isset($hobby) && $hobby=="music") echo "checked";?>>
                                 <label class="form-check-label" for="music">Music</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="movie" name="hobby" id="hobby">
+                                <input class="form-check-input" type="checkbox" value="movie" name="hobby" id="hobby" <?php if (isset($hobby) && $hobby=="movie") echo "checked";?>>
                                 <label class="form-check-label" for="movie">Movie</label>
                             </div>
                         </div>
+                        <span class="text-danger"><?php echo $hobbyErr;?></span>
                     </div>
                 </div>
             </div>
             <div class="d-flex justify-content-end mr-4">
-                <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
+                <input type="submit" name="insert" value="Submit" />
             </div>
         </form>
     </div>
-<?php
-echo "<h2>Your Input:</h2>";
-echo $firstName;
-echo "<br>";
-echo $lastName;
-echo "<br>";
-echo $email;
-echo "<br>";
-echo $gender;
-echo "<br>";
-echo $occuption;
-echo "<br>";
-echo $hobby;
-?>
 </body>
 </html>
