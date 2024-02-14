@@ -19,7 +19,7 @@
     $firstNameErr = $lastNameErr = $emailErr = $genderErr = $occuptionErr = $hobbyErr = '';
 
     if (isset($_POST['insert'])) {
-        if (empty($_POST["firstName"])) {
+        if ($_POST["firstName"] == NULL) {
             $firstNameErr = 'First name is empty';
         } else {
             $firstName = $_POST["firstName"];
@@ -48,21 +48,19 @@
         } else {
             $occuption = $_POST["occuption"];
         }
-    
-        if (empty($_POST["hobby"])) {
+        if ($_POST["hobby"] == NULL) {
             $hobbyErr = 'hobby is empty';
         } else {
-            $hobby =$_POST["hobby"];
+            $hobby = json_encode($_POST["hobby"]);
         }
-        $conn = mysqli_connect($servername, $username, $password, $dbname);
 
         // Check connection
         $sql = "INSERT INTO employeeData (firstname, lastname, email, gender, occuption, hobby)
-        VALUES ($firstName, $lastName, $email, $gender, $occuption, $hobby)";
-        var_dump($conn, $sql);
+        VALUES ('$firstName', '$lastName', '$email', '$gender', '$occuption', '$hobby')";
         
         if (mysqli_query($conn, $sql)) {
           echo "New record created successfully";
+        //   echo "<script>window.location.href='index.php'</script";
         } else {
           echo "Error: " . $sql . "<br>" . mysqli_error($conn);
         }
@@ -73,11 +71,11 @@
 
     <div style="width: 60%; margin: auto;">
         <div class="my-3 d-flex">
-            <button class='btn btn-outline-secondary mr-4' onClick="window.location.href='index.html'">Back</button>
+            <button class='btn btn-outline-secondary mr-4' onClick="window.location.href='index.php'">Back</button>
             <h4>Insert Record | PHP CRUD Operations</h4>
         </div>
         <hr>
-        <form method="post" name="insertrecord">
+        <form method="post" action="AddRecord.php">
             <div>
                 <div class="d-flex">
                     <div class="col-6 form-group">
@@ -127,15 +125,15 @@
                         <label for="occuption">Hobby</label>
                         <div class="d-flex">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="reading" name="hobby" id="hobby" <?php if (isset($hobby) && $hobby=="reading") echo "checked";?>>
+                                <input class="form-check-input" type="checkbox" value="reading" name="hobby[]" id="hobby" <?php if (isset($hobby) && $hobby=="reading") echo "checked";?>>
                                 <label class="form-check-label" for="reading">Reading</label>
                             </div>
                             <div class="form-check mx-3">
-                                <input class="form-check-input" type="checkbox" value="music" name="hobby" id="hobby" <?php if (isset($hobby) && $hobby=="music") echo "checked";?>>
+                                <input class="form-check-input" type="checkbox" value="music" name="hobby[]" id="hobby" <?php if (isset($hobby) && $hobby=="music") echo "checked";?>>
                                 <label class="form-check-label" for="music">Music</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="movie" name="hobby" id="hobby" <?php if (isset($hobby) && $hobby=="movie") echo "checked";?>>
+                                <input class="form-check-input" type="checkbox" value="movie" name="hobby[]" id="hobby" <?php if (isset($hobby) && $hobby=="movie") echo "checked";?>>
                                 <label class="form-check-label" for="movie">Movie</label>
                             </div>
                         </div>
@@ -144,7 +142,7 @@
                 </div>
             </div>
             <div class="d-flex justify-content-end mr-4">
-                <input type="submit" name="insert" value="Submit" />
+                <input type="submit" name="submit" value="Submit" />
             </div>
         </form>
     </div>
