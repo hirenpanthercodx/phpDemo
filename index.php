@@ -33,7 +33,7 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-                <!-- <form method="post" action=""> -->
+                <form method="post" action="">
                 <tbody>
                     <?php
                         require 'db.php';
@@ -57,7 +57,7 @@
                             </td>
                             <td>
                                 <div>
-                                    <button class='btn btn-primary btn-sm' name="update" onClick="<?php echo header("Location: AddRecord.php?id=2"); ?>">Edit</button>
+                                    <button class='btn btn-primary btn-sm' name="update" value="<?php echo $row['id']; ?>" onClick="<?php echo $row['id']; ?>">Edit</button>
                                     <!-- <button class='btn btn-primary btn-sm' name="update" value="<?php echo $row['id']; ?>" onClick="updateData()">Edit</button> -->
                                     <button class='btn btn-danger btn-sm' name="id" value="<?php echo $row['id']; ?>" onClick="myFunction()">
                                         Delete
@@ -73,7 +73,7 @@
                         }
                     ?>
                 </tbody>
-                <!-- </form> -->
+                </form>
             </table>
         </div>
     </div>
