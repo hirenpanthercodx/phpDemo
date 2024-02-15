@@ -33,6 +33,7 @@
                         <th>Action</th>
                     </tr>
                 </thead>
+                <!-- <form method="post" action=""> -->
                 <tbody>
                     <?php
                         require 'db.php';
@@ -56,11 +57,15 @@
                             </td>
                             <td>
                                 <div>
-                                    <button class='btn btn-primary btn-sm' onClick="window.location.href='AddRecord.php'">Edit</button>
-                                    <button class='btn btn-danger btn-sm'>Delete</button>
+                                    <button class='btn btn-primary btn-sm' name="update" onClick="<?php echo header("Location: AddRecord.php?id=2"); ?>">Edit</button>
+                                    <!-- <button class='btn btn-primary btn-sm' name="update" value="<?php echo $row['id']; ?>" onClick="updateData()">Edit</button> -->
+                                    <button class='btn btn-danger btn-sm' name="id" value="<?php echo $row['id']; ?>" onClick="myFunction()">
+                                        Delete
+                                    </button>
                                 </div>
                             </td>
                         </tr>
+                        <tr id='demo'></tr>
                     <?php
                             }
                         } else {
@@ -68,8 +73,45 @@
                         }
                     ?>
                 </tbody>
+                <!-- </form> -->
             </table>
         </div>
     </div>
+    <script>
+        function updateData() {
+            <?php
+                if (isset($_POST['update'])) {
+                    $idddd = $_POST['update'];
+                    echo $idddd;
+                    // echo "<script>window.location.href=`AddRecord.php?id=$idddd`</script>";
+                    return;
+                }  
+            ?>
+        }
+        function myFunction() {
+            let text = "Press a button!\nEither OK or Cancel.";
+            if (confirm(text) == true) {
+                console.log('pressed!')
+
+                text = "You pressed OK!";
+                <?php
+                    if (isset($_POST['id'])) {
+                        $idddd = $_POST['id'];
+                        $sql = "DELETE FROM employeeData WHERE id=$idddd";
+                        mysqli_query($conn, $sql);
+                        // if (mysqli_query($conn, $sql)) {
+                        //     echo "Record deleted successfully";
+                        //   } else {
+                        //      "Error deleting record: " . mysqli_error($conn);
+                        // }
+                    }  
+                ?>
+            } else {
+                text = "You canceled!";
+                console.log('canceled!')
+            }
+        document.getElementById("demo").innerHTML = text;
+        }
+    </script>
 </body>
 </html>

@@ -14,50 +14,39 @@
 
 <?php
     require 'db.php';
+    $id = intval($_GET['id']);
 
     $firstName = $lastName = $email = $gender = $occuption = $hobby = '';
-    $firstNameErr = $lastNameErr = $emailErr = $genderErr = $occuptionErr = $hobbyErr = '';
-
+    $editHobby = [];
+    $firstNameErr = $lastNameErr = $emailErr = $genderErr = $occuptionErr = $hobbyErr = ''; 
+  
     if (isset($_POST['insert'])) {
-        if ($_POST["firstName"] == NULL) {
-            $firstNameErr = 'First name is empty';
-        } else {
-            $firstName = $_POST["firstName"];
-        }
+        if ($_POST["firstName"] == NULL) $firstNameErr = 'First name is empty';
+        else $firstName = $_POST["firstName"];
     
-        if (empty($_POST["lastName"])) {
-            $lastNameErr = 'Last name is empty';
-        } else {
-            $lastName = $_POST["lastName"];
-        }
+        if (empty($_POST["lastName"])) $lastNameErr = 'Last name is empty';
+        else $lastName = $_POST["lastName"];
     
-        if (empty($_POST["email"])) {
-            $emailErr = 'email is empty';
-        } else {
-            $email = $_POST["email"];
-        }
+        if (empty($_POST["email"])) $emailErr = 'email is empty';
+        else $email = $_POST["email"];
     
-        if (empty($_POST["gender"])) {
-            $genderErr = 'gender is empty';
-        } else {
-            $gender = $_POST["gender"];
-        }
+        if (empty($_POST["gender"])) $genderErr = 'gender is empty';
+        else $gender = $_POST["gender"];
     
-        if (empty($_POST["occuption"])) {
-            $occuptionErr = 'occuption is empty';
-        } else {
-            $occuption = $_POST["occuption"];
-        }
+        if (empty($_POST["occuption"])) $occuptionErr = 'occuption is empty';
+        else $occuption = $_POST["occuption"];
 
-        if ($_POST["hobby"] == NULL) {
-            $hobbyErr = 'hobby is empty';
-        } else {
-            $hobby = json_encode($_POST["hobby"]);
-        }
+        if ($_POST["hobby"] == NULL) $hobbyErr = 'hobby is empty';
+        else $hobby = json_encode($_POST["hobby"]);
 
         if (!($firstNameErr || $lastNameErr || $emailErr || $genderErr || $occuptionErr || $hobbyErr)) {
-            $sql = "INSERT INTO employeeData (firstname, lastname, email, gender, occuption, hobby)
-            VALUES ('$firstName', '$lastName', '$email', '$gender', '$occuption', '$hobby')";
+            if ($id) {
+                $sql = "UPDATE employeeData SET firstname='$firstName', lastname='$lastName', email='$email', gender='$gender',
+                        occuption='$occuption', hobby='$hobby' WHERE id=$id";
+            } else {
+                $sql = "INSERT INTO employeeData (firstname, lastname, email, gender, occuption, hobby)
+                VALUES ('$firstName', '$lastName', '$email', '$gender', '$occuption', '$hobby')";
+            }
             
             if (mysqli_query($conn, $sql)) {
               echo "New record created successfully";
@@ -66,9 +55,24 @@
               echo "Error: " . $sql . "<br>" . mysqli_error($conn);
             }
         }
-        
-        mysqli_close($conn);
-    }    
+    } else {
+        echo $id;
+        $sql = "SELECT * FROM employeeData WHERE id=$id";
+        $result = mysqli_query($conn, $sql);
+        if (mysqli_num_rows($result) > 0) {
+            while($row = mysqli_fetch_assoc($result)) {
+                $firstName = $row["firstname"];
+                $lastName = $row["lastname"];
+                $email = $row["email"];
+                $gender = $row["gender"];
+                $occuption = $row["occuption"];
+                $editHobby = json_decode($row["hobby"]);
+            }
+        } else {
+            echo "no rocord found";
+        }
+    }
+    mysqli_close($conn);
 ?>
 
     <div style="width: 60%; margin: auto;">
@@ -115,11 +119,11 @@
                 <div class="d-flex">
                     <div class="col-6 form-group">
                         <label for="occuption">Occuption</label>
-                        <select class="custom-select" id="occuption" name="occuption" value="<?php echo $occuption;?>">
-                            <option value="">Select</option>
-                            <option value="job">Job</option>
-                            <option value="business">Business</option>
-                            <option value="other">Other</option>
+                        <select class="custom-select" id="occuption" name="occuption">
+                            <option value="" <?= $occuption == '' ? ' selected="selected"' : ''; ?>>Select</option>
+                            <option value="job" <?= $occuption == 'job' ? ' selected="selected"' : ''; ?>>Job</option>
+                            <option value="business" <?= $occuption == 'business' ? ' selected="selected"' : ''; ?>>Business</option>
+                            <option value="other" <?= $occuption == 'other' ? ' selected="selected"' : ''; ?>>Other</option>
                         </select>
                         <span class="text-danger"><?php echo $occuptionErr;?></span>
                     </div>
@@ -127,15 +131,15 @@
                         <label for="occuption">Hobby</label>
                         <div class="d-flex">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="reading" name="hobby[]" id="hobby" <?php if (isset($hobby) && $hobby=="reading") echo "checked";?>>
+                                <input class="form-check-input" type="checkbox" value="reading" name="hobby[]" id="hobby" <?php if (in_array("reading", $editHobby)) echo "checked";?>>
                                 <label class="form-check-label" for="reading">Reading</label>
                             </div>
                             <div class="form-check mx-3">
-                                <input class="form-check-input" type="checkbox" value="music" name="hobby[]" id="hobby" <?php if (isset($hobby) && $hobby=="music") echo "checked";?>>
+                                <input class="form-check-input" type="checkbox" value="music" name="hobby[]" id="hobby" <?php if (in_array("music", $editHobby)) echo "checked";?>>
                                 <label class="form-check-label" for="music">Music</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="movie" name="hobby[]" id="hobby" <?php if (isset($hobby) && $hobby=="movie") echo "checked";?>>
+                                <input class="form-check-input" type="checkbox" value="movie" name="hobby[]" id="hobby" <?php if (in_array("movie", $editHobby)) echo "checked";?>>
                                 <label class="form-check-label" for="movie">Movie</label>
                             </div>
                         </div>
