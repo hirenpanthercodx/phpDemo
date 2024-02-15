@@ -48,21 +48,23 @@
         } else {
             $occuption = $_POST["occuption"];
         }
+
         if ($_POST["hobby"] == NULL) {
             $hobbyErr = 'hobby is empty';
         } else {
             $hobby = json_encode($_POST["hobby"]);
         }
 
-        // Check connection
-        $sql = "INSERT INTO employeeData (firstname, lastname, email, gender, occuption, hobby)
-        VALUES ('$firstName', '$lastName', '$email', '$gender', '$occuption', '$hobby')";
-        
-        if (mysqli_query($conn, $sql)) {
-          echo "New record created successfully";
-        //   echo "<script>window.location.href='index.php'</script";
-        } else {
-          echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+        if (!($firstNameErr || $lastNameErr || $emailErr || $genderErr || $occuptionErr || $hobbyErr)) {
+            $sql = "INSERT INTO employeeData (firstname, lastname, email, gender, occuption, hobby)
+            VALUES ('$firstName', '$lastName', '$email', '$gender', '$occuption', '$hobby')";
+            
+            if (mysqli_query($conn, $sql)) {
+              echo "New record created successfully";
+              echo "<script>window.location.href='index.php'</script";
+            } else {
+              echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+            }
         }
         
         mysqli_close($conn);
@@ -75,7 +77,7 @@
             <h4>Insert Record | PHP CRUD Operations</h4>
         </div>
         <hr>
-        <form method="post" action="AddRecord.php">
+        <form method="post">
             <div>
                 <div class="d-flex">
                     <div class="col-6 form-group">
@@ -142,7 +144,7 @@
                 </div>
             </div>
             <div class="d-flex justify-content-end mr-4">
-                <input type="submit" name="submit" value="Submit" />
+                <input type="submit" name="insert" value="Submit" />
             </div>
         </form>
     </div>
