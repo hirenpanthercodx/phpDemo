@@ -9,75 +9,76 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<?php
-    require 'db.php';
-    $id = intval($_GET['id']);
+    <?php
+        require 'db.php';
+        $id = intval($_GET['id']);
 
-    $firstName = $lastName = $email = $gender = $occuption = $hobby = '';
-    $editHobby = [];
-    $firstNameErr = $lastNameErr = $emailErr = $genderErr = $occuptionErr = $hobbyErr = ''; 
-  
-    if (isset($_POST['insert'])) {
-        if ($_POST["firstName"] == NULL) $firstNameErr = 'First name is empty';
-        else $firstName = $_POST["firstName"];
+        $firstName = $lastName = $email = $gender = $occuption = $hobby = '';
+        $editHobby = [];
+        $firstNameErr = $lastNameErr = $emailErr = $genderErr = $occuptionErr = $hobbyErr = ''; 
     
-        if (empty($_POST["lastName"])) $lastNameErr = 'Last name is empty';
-        else $lastName = $_POST["lastName"];
-    
-        if (empty($_POST["email"])) $emailErr = 'email is empty';
-        else $email = $_POST["email"];
-    
-        if (empty($_POST["gender"])) $genderErr = 'gender is empty';
-        else $gender = $_POST["gender"];
-    
-        if (empty($_POST["occuption"])) $occuptionErr = 'occuption is empty';
-        else $occuption = $_POST["occuption"];
+        if (isset($_POST['insert'])) {
+            if ($_POST["firstName"] == NULL) $firstNameErr = 'First name is empty';
+            else $firstName = $_POST["firstName"];
+        
+            if (empty($_POST["lastName"])) $lastNameErr = 'Last name is empty';
+            else $lastName = $_POST["lastName"];
+        
+            if (empty($_POST["email"])) $emailErr = 'email is empty';
+            else $email = $_POST["email"];
+        
+            if (empty($_POST["gender"])) $genderErr = 'gender is empty';
+            else $gender = $_POST["gender"];
+        
+            if (empty($_POST["occuption"])) $occuptionErr = 'occuption is empty';
+            else $occuption = $_POST["occuption"];
 
-        if ($_POST["hobby"] == NULL) $hobbyErr = 'hobby is empty';
-        else $hobby = json_encode($_POST["hobby"]);
+            if ($_POST["hobby"] == NULL) $hobbyErr = 'hobby is empty';
+            else $hobby = json_encode($_POST["hobby"]);
 
-        if (!($firstNameErr || $lastNameErr || $emailErr || $genderErr || $occuptionErr || $hobbyErr)) {
+            if (!($firstNameErr || $lastNameErr || $emailErr || $genderErr || $occuptionErr || $hobbyErr)) {
+                if ($id) {
+                    $sql = "UPDATE employeeData SET firstname='$firstName', lastname='$lastName', email='$email', gender='$gender',
+                            occuption='$occuption', hobby='$hobby' WHERE id=$id";
+                } else {
+                    $sql = "INSERT INTO employeeData (firstname, lastname, email, gender, occuption, hobby)
+                    VALUES ('$firstName', '$lastName', '$email', '$gender', '$occuption', '$hobby')";
+                }
+                
+                if (mysqli_query($conn, $sql)) {
+                echo "New record created successfully";
+                echo "<script>window.location.href='index.php'</script";
+                } else {
+                echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+                }
+            }
+        } else {
             if ($id) {
-                $sql = "UPDATE employeeData SET firstname='$firstName', lastname='$lastName', email='$email', gender='$gender',
-                        occuption='$occuption', hobby='$hobby' WHERE id=$id";
-            } else {
-                $sql = "INSERT INTO employeeData (firstname, lastname, email, gender, occuption, hobby)
-                VALUES ('$firstName', '$lastName', '$email', '$gender', '$occuption', '$hobby')";
-            }
-            
-            if (mysqli_query($conn, $sql)) {
-              echo "New record created successfully";
-              echo "<script>window.location.href='index.php'</script";
-            } else {
-              echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-            }
-        }
-    } else {
-        if ($id) {
-            $sql = "SELECT * FROM employeeData WHERE id=$id";
-            $result = mysqli_query($conn, $sql);
-            if (mysqli_num_rows($result) > 0) {
-                while($row = mysqli_fetch_assoc($result)) {
-                    $firstName = $row["firstname"];
-                    $lastName = $row["lastname"];
-                    $email = $row["email"];
-                    $gender = $row["gender"];
-                    $occuption = $row["occuption"];
-                    $editHobby = json_decode($row["hobby"]);
+                $sql = "SELECT * FROM employeeData WHERE id=$id";
+                $result = mysqli_query($conn, $sql);
+                if (mysqli_num_rows($result) > 0) {
+                    while($row = mysqli_fetch_assoc($result)) {
+                        $firstName = $row["firstname"];
+                        $lastName = $row["lastname"];
+                        $email = $row["email"];
+                        $gender = $row["gender"];
+                        $occuption = $row["occuption"];
+                        $editHobby = json_decode($row["hobby"]);
+                    }
                 }
             }
         }
-    }
-    mysqli_close($conn);
-?>
+        mysqli_close($conn);
+    ?>
 
-    <div style="width: 60%; margin: auto;">
-        <div class="my-3 d-flex">
+    <div class='card'>
+        <div class="d-flex">
             <button class='btn btn-outline-secondary mr-4' onClick="window.location.href='index.php'">Back</button>
-            <h4>Insert Record | PHP CRUD Operations</h4>
+            <h4 class='mb-0 d-flex align-items-center'>Insert Record | PHP CRUD Operations</h4>
         </div>
         <hr>
         <form method="post">
