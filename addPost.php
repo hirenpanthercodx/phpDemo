@@ -11,11 +11,28 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+    <?php
+        require 'db.php';
+        print_r($_POST);
+    ?>
     <div class="card">
-        <div class='d-flex justify-content-between my-3'>
-            <h4 class='d-flex align-items-center mb-0'>Employee Post</h4>
-            <button type="button" class='btn btn-success' onClick="window.location.href='addPost.php'">Add Post</button>
-        </div>
+        <form method="post">
+            <div class='d-flex justify-content-between my-3'>
+                <h4 class='d-flex align-items-center mb-0'>Create Post</h4>
+            </div>
+            <div class="form-group">
+                <label for="inputGroupFile04">Upload Image</label>
+                <input type="file" class="form-control" name="image" id="inputGroupFile04" accept='.jpg, .png, .jpeg'>
+            </div>
+            <div class="form-group">
+                <label for="notes">Description</label>
+                <textarea id="w3review" class="form-control" name="notes" rows="4" cols="50"></textarea> 
+            </div>
+            <div class="row d-flex justify-content-end mr-2">
+                <input type="submit" role="button" name="create" class="btn btn-success" value="Create" />
+            </div>
+        </form>
     </div>
 </body>
 </html>

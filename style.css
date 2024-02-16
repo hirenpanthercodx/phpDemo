@@ -41,3 +41,11 @@ body {
         text-align: center; 
     }
 }
+
+.file-input-label {
+    border: 1px solid #d8d6de;
+    padding: 8px 15px;
+    border-radius: 5px;
+    width: 100%;
+  }
+  

@@ -29,8 +29,8 @@
     
     <div class='card'>
         <div class='d-flex justify-content-between my-3'>
-            <h4 class='d-flex align-items-center mb-0'>PHP CRUD Operations</h4>
-            <button type="button" class='btn btn-primary' onClick="window.location.href='AddRecord.php'">Add Record</button>
+            <h4 class='d-flex align-items-center mb-0'>Admin Dashboard</h4>
+            <button type="button" class='btn btn-success' onClick="window.location.href='AddRecord.php'">Add Record</button>
         </div>
         <div>
             <table class="table">
@@ -55,12 +55,12 @@
                             while($row = mysqli_fetch_assoc($result)) {
                     ?>
                         <tr>
-                            <td><?php echo htmlentities($row['id']);?></td>
-                            <td><?php echo htmlentities($row['firstname']);?></td>
-                            <td><?php echo htmlentities($row['lastname']);?></td>
-                            <td><?php echo htmlentities($row['email']);?></td>
-                            <td><?php echo htmlentities($row['gender']);?></td>
-                            <td><?php echo htmlentities($row['occuption']);?></td>
+                            <td><?php echo $row['id'];?></td>
+                            <td><?php echo $row['firstname'];?></td>
+                            <td><?php echo $row['lastname'];?></td>
+                            <td><?php echo $row['email'];?></td>
+                            <td><?php echo $row['gender'];?></td>
+                            <td><?php echo $row['occuption'];?></td>
                             <td>
                                 <?php
                                     $arr = json_decode($row['hobby']);

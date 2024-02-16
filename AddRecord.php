@@ -148,7 +148,7 @@
                 </div>
             </div>
             <div class="d-flex justify-content-end mr-4">
-                <input type="submit" class='btn btn-primary btn-sm' role="button" name="insert" value="Submit" />
+                <input type="submit" class='btn btn-primary' role="button" name="insert" value="Submit" />
             </div>
         </form>
     </div>
