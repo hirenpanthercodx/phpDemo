@@ -10,13 +10,25 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 </head>
 <body>
+
+    <?php 
+        require 'db.php'; 
+        if( isset( $_POST['insert'] ) ) {
+            $did = $_POST['id'];
+            $sql = "DELETE FROM employeeData WHERE id=$did";
+            
+            if (mysqli_query($conn, $sql)) {
+              echo '<script>alert("Record deleted successfully !")</script>';
+              echo '<script>window.location.reload();)</script>';
+            } else {
+              echo "Error deleting record: " . mysqli_error($conn);
+            }
+        }
+    ?>
     
     <div style="width: 60%; margin: auto;">
-        <div class="mt-3">
-            <h4>PHP CRUD Operations using Stored Procedure</h4>
-            <hr>
-        </div>
-        <div class='d-flex justify-content-end'>
+        <div class='d-flex justify-content-between my-3'>
+            <h4 class='d-flex align-items-center mb-0'>PHP CRUD Operations</h4>
             <button type="button" class='btn btn-primary' onClick="window.location.href='AddRecord.php'">Add Record</button>
         </div>
         <div>
@@ -33,7 +45,6 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-                <form method="post" action="">
                 <tbody>
                     <?php
                         require 'db.php';
@@ -56,62 +67,28 @@
                                 ?>
                             </td>
                             <td>
-                                <div>
-                                    <button class='btn btn-primary btn-sm' name="update" value="<?php echo $row['id']; ?>" onClick="<?php echo $row['id']; ?>">Edit</button>
-                                    <!-- <button class='btn btn-primary btn-sm' name="update" value="<?php echo $row['id']; ?>" onClick="updateData()">Edit</button> -->
-                                    <button class='btn btn-danger btn-sm' name="id" value="<?php echo $row['id']; ?>" onClick="myFunction()">
-                                        Delete
-                                    </button>
+                                <div class='d-flex'>
+                                    <div class='mr-2'>
+                                        <a class='btn btn-primary btn-sm' role="button" name="update" href="<?php echo "AddRecord.php?id=".$row['id'] ?>">Edit</a>  
+                                    </div>
+                                    <div>
+                                        <form method='POST'>
+                                            <input type=hidden name=id value="<?php echo $row['id'] ?>" >
+                                            <input type="submit" class='btn btn-danger btn-sm' role="button" name="insert" value="Delete" />
+                                        </form>                               
+                                    </div>
                                 </div>
                             </td>
                         </tr>
-                        <tr id='demo'></tr>
-                    <?php
+                        <?php
                             }
                         } else {
-                            echo "0 results";
+                            echo "<tr><td>No Record found</td></tr>";
                         }
-                    ?>
+                        ?>
                 </tbody>
-                </form>
             </table>
-        </div>
-    </div>
-    <script>
-        function updateData() {
-            <?php
-                if (isset($_POST['update'])) {
-                    $idddd = $_POST['update'];
-                    echo $idddd;
-                    // echo "<script>window.location.href=`AddRecord.php?id=$idddd`</script>";
-                    return;
-                }  
-            ?>
-        }
-        function myFunction() {
-            let text = "Press a button!\nEither OK or Cancel.";
-            if (confirm(text) == true) {
-                console.log('pressed!')
-
-                text = "You pressed OK!";
-                <?php
-                    if (isset($_POST['id'])) {
-                        $idddd = $_POST['id'];
-                        $sql = "DELETE FROM employeeData WHERE id=$idddd";
-                        mysqli_query($conn, $sql);
-                        // if (mysqli_query($conn, $sql)) {
-                        //     echo "Record deleted successfully";
-                        //   } else {
-                        //      "Error deleting record: " . mysqli_error($conn);
-                        // }
-                    }  
-                ?>
-            } else {
-                text = "You canceled!";
-                console.log('canceled!')
-            }
-        document.getElementById("demo").innerHTML = text;
-        }
-    </script>
+        </div>  
+    </div> 
 </body>
 </html>

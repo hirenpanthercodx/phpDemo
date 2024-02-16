@@ -56,20 +56,19 @@
             }
         }
     } else {
-        echo $id;
-        $sql = "SELECT * FROM employeeData WHERE id=$id";
-        $result = mysqli_query($conn, $sql);
-        if (mysqli_num_rows($result) > 0) {
-            while($row = mysqli_fetch_assoc($result)) {
-                $firstName = $row["firstname"];
-                $lastName = $row["lastname"];
-                $email = $row["email"];
-                $gender = $row["gender"];
-                $occuption = $row["occuption"];
-                $editHobby = json_decode($row["hobby"]);
+        if ($id) {
+            $sql = "SELECT * FROM employeeData WHERE id=$id";
+            $result = mysqli_query($conn, $sql);
+            if (mysqli_num_rows($result) > 0) {
+                while($row = mysqli_fetch_assoc($result)) {
+                    $firstName = $row["firstname"];
+                    $lastName = $row["lastname"];
+                    $email = $row["email"];
+                    $gender = $row["gender"];
+                    $occuption = $row["occuption"];
+                    $editHobby = json_decode($row["hobby"]);
+                }
             }
-        } else {
-            echo "no rocord found";
         }
     }
     mysqli_close($conn);
@@ -148,7 +147,7 @@
                 </div>
             </div>
             <div class="d-flex justify-content-end mr-4">
-                <input type="submit" name="insert" value="Submit" />
+                <input type="submit" class='btn btn-primary btn-sm' role="button" name="insert" value="Submit" />
             </div>
         </form>
     </div>
