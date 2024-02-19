@@ -1,3 +1,9 @@
+<?php
+    session_start();
+    if(!$_SESSION["userLogin"]) {
+        header("Location: login.php");
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,8 +22,8 @@
         require 'db.php';
         $filename = $notes = '';
 
-        $user_id = intval($_GET['id']);
-        $post_id = intval($_GET['post_id']);
+        $user_id = $_GET['id'];
+        $post_id = $_GET['post_id'];
 
         if(isset($_POST['create'])) {
             $notes = $_POST["notes"];

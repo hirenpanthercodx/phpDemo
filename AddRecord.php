@@ -1,4 +1,9 @@
-
+<?php
+    session_start();
+    if(!$_SESSION["userLogin"]) {
+        header("Location: login.php");
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +20,7 @@
 
     <?php
         require 'db.php';
-        $id = intval($_GET['id']);
+        $id = $_GET['id'];
 
         $firstName = $lastName = $email = $gender = $occuption = $hobby = '';
         $editHobby = [];

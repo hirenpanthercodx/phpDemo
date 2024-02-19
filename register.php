@@ -1,3 +1,6 @@
+<?php
+    session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,6 +53,7 @@
         
                     if (mysqli_query($conn, $sql)) {
                         echo '<script>alert("New Record Register Successfully !")</script>';
+                        $_SESSION["userLogin"] = $email;
                         if ($role === 'admin') header("Location: index.php");
                         if ($role === 'employee') {
     
@@ -59,7 +63,6 @@
                                 $row = mysqli_fetch_assoc($result);
                                 if ($row['email'] === $email && $row['user_password'] === $password) {
                                     echo "<script type='text/javascript'>toastr.success('Login successfully')</script>";
-                                    var_dump($row);
                                     if ($row['user_role'] === 'admin') header("Location: index.php");
                                     if ($row['user_role'] === 'employee') header("Location: employeeData.php?id=".$row['user_id']);
                                 } else {

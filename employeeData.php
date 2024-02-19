@@ -1,3 +1,9 @@
+<?php
+    session_start();
+    if(!$_SESSION["userLogin"]) {
+        header("Location: login.php");
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,29 +17,45 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <?php
+        if (isset($_POST['logout'])) {
+            session_unset(); 
+            session_destroy();
+            header("Location: login.php");
+        }
+    ?>
     <div class="card">
         <div class='d-flex justify-content-between my-3'>
             <h4 class='d-flex align-items-center mb-0'>Employee Post</h4>
-            <a class='btn btn-primary' role="button" href="<?php echo "addPost.php?id=".intval($_GET['id']); ?>" 
-                style="<?php    
-                    require 'db.php';
-                    $user_id = $_GET['id'];
-    
-                    $sql = "SELECT * FROM user WHERE user_id=$user_id";
-                    $result = mysqli_query($conn, $sql);
-                    $data = mysqli_fetch_assoc($result);
-                    if (!in_array('create', json_decode($data['permission']))) {
-                        echo 'display:none';
-                    }
-                ?>"
-            >
-                Add Post
-            </a>
+            <div class='d-flex'>
+                <div class='mr-2'>
+                <a class='btn btn-success' role="button" href="<?php echo "addPost.php?id=".$_GET['id']; ?>" 
+                    style="<?php    
+                        require 'db.php';
+                        $user_id = $_GET['id'];
+        
+                        $sql = "SELECT * FROM user WHERE user_id=$user_id";
+                        $result = mysqli_query($conn, $sql);
+                        $data = mysqli_fetch_assoc($result);
+                        if (!in_array('create', json_decode($data['permission']))) {
+                            echo 'display:none';
+                        }
+                    ?>"
+                >
+                    Add Post
+                </a>
+                </div>
+                <div>
+                    <form method="post">
+                        <input type="submit" role='button' class='btn btn-danger' name="logout" value="Logout">
+                    </form>
+                </div>
+            </div>
         </div>
         <div>
             <?php
                 require 'db.php';
-                $user_id = intval($_GET['id']);
+                $user_id = $_GET['id'];
                 
                 $sql = "SELECT * FROM user_post WHERE user=$user_id";
                 $result = mysqli_query($conn, $sql);
@@ -61,12 +83,12 @@
                         $permiResult = mysqli_query($conn, $peremiSql);
                         $permi = mysqli_fetch_assoc($permiResult);
                         if (in_array('update', json_decode($permi['permission']))) {
-                            echo "addPost.php?id=".intval($_GET['id'])."&post_id=".$data['id']; 
+                            echo "addPost.php?id=".$_GET['id']."&post_id=".$data['id']; 
                         }
 
                     ?>">
                         <img src="./image/<?php echo $data['filename']; ?>">
-                        <p><?php echo $data['notes']; ?></p>
+                        <p style='color:black'><?php echo $data['notes']; ?></p>
                     </a>
                 </div>
             <?php

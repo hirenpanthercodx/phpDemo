@@ -1,3 +1,7 @@
+<?php
+    session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,7 +38,7 @@
                 $row = mysqli_fetch_assoc($result);
                 if ($row['email'] === $email && $row['user_password'] === $password) {
                     echo "<script type='text/javascript'>toastr.success('Login successfully')</script>";
-                    var_dump($row);
+                    $_SESSION["userLogin"] = $email;
                     if ($row['user_role'] === 'admin') header("Location: index.php");
                     if ($row['user_role'] === 'employee') header("Location: employeeData.php?id=".$row['user_id']);
                 } else {

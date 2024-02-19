@@ -1,3 +1,9 @@
+<?php
+    session_start();
+    if(!$_SESSION["userLogin"]) {
+        header("Location: login.php");
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,12 +31,22 @@
               echo "Error deleting record: " . mysqli_error($conn);
             }
         }
+        if (isset($_POST['logout'])) {
+            session_unset(); 
+            session_destroy();
+            header("Location: login.php");
+        }
     ?>
     
     <div class='card'>
         <div class='d-flex justify-content-between my-3'>
             <h4 class='d-flex align-items-center mb-0'>Admin Dashboard</h4>
-            <button type="button" class='btn btn-success' onClick="window.location.href='AddRecord.php'">Add Record</button>
+            <div>
+                <button type="button" class='btn btn-success' onClick="window.location.href='AddRecord.php'">Add Record</button>
+                <form method="post">
+                    <input type="submit" role='button' class='btn btn-danger' name="logout" value="Logout">
+                </form>
+            </div>
         </div>
         <div>
             <table class="table">
