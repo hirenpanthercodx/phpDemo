@@ -18,6 +18,8 @@
 
     <?php 
         require 'db.php';
+        $permission = $permissionErr = '';
+
         if (isset($_POST['register'])) {
 
             function validate($data){
@@ -26,22 +28,47 @@
                 $data = htmlspecialchars($data);
                 return $data;
             }
+            var_dump($_POST, $permissionErr);
+
             $email = validate($_POST["email"]);
             $password = validate($_POST["user_password"]);
             $role = validate($_POST["user_role"]);
-
+            $permission = $_POST["permission"];
+ 
             $sql = "SELECT * FROM user WHERE email='$email'";
             $result = mysqli_query($conn, $sql);
             if (mysqli_num_rows($result) > 0) {
                 echo "<script type='text/javascript'>toastr.error('email already registered')</script>";
-            } else {     
-                $sql = "INSERT INTO user (email, user_password, user_role)
-                VALUES ('$email', '$password', '$role')";
+            } else {    
+
+                if ($_POST["permission"] == NULL) $permissionErr = 'Permission is empty';
+                else $permission = json_encode($_POST["permission"]);
+
+                if (!$permissionErr) {
+                    $sql = "INSERT INTO user (email, user_password, user_role, permission)
+                    VALUES ('$email', '$password', '$role', '$permission')";
+        
+                    if (mysqli_query($conn, $sql)) {
+                        echo '<script>alert("New Record Register Successfully !")</script>';
+                        if ($role === 'admin') header("Location: index.php");
+                        if ($role === 'employee') {
     
-                if (mysqli_query($conn, $sql)) {
-                    echo '<script>alert("New Record Register Successfully !")</script>';
-                    if ($role === 'admin') header("Location: index.php");
-                    if ($role === 'employee') header("Location: employeeData.html");
+                            $sql = "SELECT * FROM user WHERE email='$email' AND user_password='$password'";
+                            $result = mysqli_query($conn, $sql);
+                            if (mysqli_num_rows($result) === 1) {
+                                $row = mysqli_fetch_assoc($result);
+                                if ($row['email'] === $email && $row['user_password'] === $password) {
+                                    echo "<script type='text/javascript'>toastr.success('Login successfully')</script>";
+                                    var_dump($row);
+                                    if ($row['user_role'] === 'admin') header("Location: index.php");
+                                    if ($row['user_role'] === 'employee') header("Location: employeeData.php?id=".$row['user_id']);
+                                } else {
+                                    echo "<script type='text/javascript'>toastr.error('Invalid email or password, please try again')</script>";
+                                }
+                            }
+                        }
+                    }
+
                 } else {
                     echo "Error: " . $sql . "<br>" . mysqli_error($conn);
                 }
@@ -77,6 +104,28 @@
                     <option value="admin">Admin</option>
                     <option value="employee">Employee</option>
                 </select>
+            </div>
+            <div class='my-3'>
+                <label >Role Permissions</label>
+                <div class='d-flex'>
+                    <span class='form-check'>
+                        <input type='checkbox' class="form-check-input" value="view" id='permission' name='permission[]' />
+                        <label for="view">View</label>
+                    </span>
+                    <span class='mx-3 form-check'>
+                        <input type='checkbox' class="form-check-input" value="create" id='permission' name='permission[]' />
+                        <label for="create">Create</label>
+                    </span>
+                    <span class='mr-3 form-check'>
+                        <input type='checkbox' class="form-check-input" value="update" id='permission' name='permission[]' />
+                        <label for="update">Update</label>
+                    </span>
+                    <span class='form-check'>
+                        <input type='checkbox' class="form-check-input" value="delete" id='permission' name='permission[]' />
+                        <label for="delete">Delete</label>
+                    </span>
+                </div>
+                <span class="text-danger"><?php echo $permissionErr;?></span>
             </div>
             <div class="mb-2"> 
                 <input type="submit" role="button" name="register" class="btn btn-success w-100" value="Register" />
