@@ -1,6 +1,8 @@
 <?php
     session_start();
-    if(!$_SESSION["userLogin"]) {
+    if($_SESSION["userLogin"]) {
+        if ($_SESSION["userRole"] === 'employee') header("Location: employeeData.php?id=".$_SESSION['userId']);
+    } else {
         header("Location: login.php");
     }
 ?>
@@ -41,11 +43,15 @@
     <div class='card'>
         <div class='d-flex justify-content-between my-3'>
             <h4 class='d-flex align-items-center mb-0'>Admin Dashboard</h4>
-            <div>
-                <button type="button" class='btn btn-success' onClick="window.location.href='AddRecord.php'">Add Record</button>
-                <form method="post">
-                    <input type="submit" role='button' class='btn btn-danger' name="logout" value="Logout">
-                </form>
+            <div class='d-flex'>
+                <div class='mr-2'>
+                    <button type="button" class='btn btn-success' onClick="window.location.href='AddRecord.php'">Add Record</button>
+                </div>
+                <div>
+                    <form method="post">
+                        <input type="submit" role='button' class='btn btn-danger' name="logout" value="Logout">
+                    </form>
+                </div>
             </div>
         </div>
         <div>

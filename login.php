@@ -1,5 +1,9 @@
 <?php
-    session_start();
+  session_start();
+  if($_SESSION["userLogin"]) {
+      if ($_SESSION["userRole"] === 'admin') header("Location: index.php");
+      else if ($_SESSION["userRole"] === 'employee') header("Location: employeeData.php?id=".$_SESSION['userId']);
+  }
 ?>
 
 <!DOCTYPE html>
@@ -38,7 +42,11 @@
                 $row = mysqli_fetch_assoc($result);
                 if ($row['email'] === $email && $row['user_password'] === $password) {
                     echo "<script type='text/javascript'>toastr.success('Login successfully')</script>";
+
                     $_SESSION["userLogin"] = $email;
+                    $_SESSION["userId"] = $row['user_id'];
+                    $_SESSION["userRole"] = $row['user_role'];
+
                     if ($row['user_role'] === 'admin') header("Location: index.php");
                     if ($row['user_role'] === 'employee') header("Location: employeeData.php?id=".$row['user_id']);
                 } else {

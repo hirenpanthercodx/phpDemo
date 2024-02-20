@@ -1,5 +1,9 @@
 <?php
     session_start();
+    if($_SESSION["userLogin"]) {
+        if ($_SESSION["userRole"] === 'admin') header("Location: index.php");
+        else if ($_SESSION["userRole"] === 'employee') header("Location: employeeData.php?id=".$_SESSION['userId']);
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,7 +35,6 @@
                 $data = htmlspecialchars($data);
                 return $data;
             }
-            var_dump($_POST, $permissionErr);
 
             $email = validate($_POST["email"]);
             $password = validate($_POST["user_password"]);
@@ -54,14 +57,16 @@
                     if (mysqli_query($conn, $sql)) {
                         echo '<script>alert("New Record Register Successfully !")</script>';
                         $_SESSION["userLogin"] = $email;
-                        if ($role === 'admin') header("Location: index.php");
-                        if ($role === 'employee') {
+                        // if ($role === 'admin') header("Location: index.php");
+                        // if ($role === 'employee') {
     
                             $sql = "SELECT * FROM user WHERE email='$email' AND user_password='$password'";
                             $result = mysqli_query($conn, $sql);
                             if (mysqli_num_rows($result) === 1) {
                                 $row = mysqli_fetch_assoc($result);
                                 if ($row['email'] === $email && $row['user_password'] === $password) {
+                                    $_SESSION["userId"] = $row['user_id'];
+                                    $_SESSION["userRole"] = $row['user_role'];
                                     echo "<script type='text/javascript'>toastr.success('Login successfully')</script>";
                                     if ($row['user_role'] === 'admin') header("Location: index.php");
                                     if ($row['user_role'] === 'employee') header("Location: employeeData.php?id=".$row['user_id']);
@@ -69,7 +74,7 @@
                                     echo "<script type='text/javascript'>toastr.error('Invalid email or password, please try again')</script>";
                                 }
                             }
-                        }
+                        // }
                     }
 
                 } else {
