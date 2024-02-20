@@ -31,19 +31,16 @@
             $tempname = $_FILES["uploadfile"]["tmp_name"];
             $folder = "./image/" . $filename;
             
-            if ($post_id) {
-                $sql = "UPDATE user_post SET filename='$filename', notes='$notes' WHERE id=$post_id";
-                mysqli_query($conn, $sql);
-            } else {
-                $sql = "INSERT INTO user_post (filename, notes, user) VALUES ('$filename', '$notes', '$user_id')";
-                mysqli_query($conn, $sql);
-            }
+            if ($post_id) $sql = "UPDATE user_post SET filename='$filename', notes='$notes' WHERE id=$post_id";
+            else $sql = "INSERT INTO user_post (filename, notes, user) VALUES ('$filename', '$notes', '$user_id')";
             
             if (move_uploaded_file($tempname, $folder)) {
+                mysqli_query($conn, $sql);
                 echo "<h3>  Image uploaded successfully!</h3>";
                 header("Location: employeeData.php?id=".$user_id);
             } else {
                 echo "<h3>  Failed to upload image!</h3>";
+                echo '<script>window.location.reload();)</script>';
             }
         } else if ($post_id) {
             $sql = "SELECT * FROM user_post WHERE id='$post_id'";
